@@ -3,9 +3,16 @@ version: 1
 ci:
   image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
 
-matchers:
+git:
   branches:
     main: "^main$"
+  tags:
+    stable:     { pattern: "^v?\\d+\\.\\d+\\.\\d+$" }
+    prerelease: { pattern: "^v?\\d+\\.\\d+\\.\\d+-.+" }
+  versioning:
+    branch_builds:
+      default: { base_from: [stable], format: "{base}-dev+{sha}" }
+    no_lineage: { mode: error }
 
 vars:
   org: hlhd
@@ -14,36 +21,26 @@ vars:
   repo: weave-gitops
   github_repo: weave-gitops
 
-versioning:
-  tag_sources:
-    - id: stable
-      pattern: "^v?\\d+\\.\\d+\\.\\d+$"
-    - id: prerelease
-      pattern: "^v?\\d+\\.\\d+\\.\\d+-.+"
-  branch_builds:
-    - id: default
-      base_from: [stable]
-      format: "{base}-dev+{sha}"
-  no_lineage:
-    # Building upstream main HEAD (latest-unreleased); no guaranteed stable-tag lineage
-    # in the fork yet, so dev builds use an explicit honest version. Switch to
-    # `mode: error` once a stable v-tag is reachable.
-    mode: explicit
-    version: "0.0.0-dev+{sha}"
+builds:
+  # Our fork of weaveworks/weave-gitops — no first-party binary to recycle; a single
+  # docker build off their Dockerfile.
+  weave-gitops:
+    kind: docker
+    platforms: [linux/amd64]
 
 forges:
-  - id: gitlab
+  gitlab:
     provider: gitlab
     url: "https://gitlab.prplanit.com"
     credentials: GITLAB
 
-  - id: github
+  github:
     provider: github
     url: "https://github.com"
     credentials: GITHUB
 
 repos:
-  - id: primary
+  primary:
     forge: gitlab
     project: "{var:gitlab_group}/{var:repo}"
     roles: [primary]
@@ -51,7 +48,7 @@ repos:
       default: main
     worktree: "."
 
-  - id: github-mirror
+  github-mirror:
     forge: github
     project: "{var:github_org}/{var:github_repo}"
     roles: [mirror, publish-origin]
@@ -60,124 +57,77 @@ repos:
       releases: true
 
 registries:
-  - id: dockerhub
+  dockerhub:
     provider: docker
     url: docker.io
     credentials: DOCKER
     default_path: "{var:org}/{var:repo}"
 
-  - id: harbor
+  harbor:
     provider: harbor
     url: cr.pcfae.com
     credentials: HARBOR
     default_path: "{var:org}/{var:repo}"
 
-  # GitHub Container Registry (primary). On GitHub Actions, StageFreight auto-wires
-  # GHCR_USER/GHCR_TOKEN from the runner's GITHUB_TOKEN (packages: write) — no secret.
-  - id: ghcr
+  # GitHub Container Registry. On GitHub Actions, StageFreight auto-wires GHCR_USER/
+  # GHCR_TOKEN from the runner's GITHUB_TOKEN (packages: write) — no configured secret.
+  ghcr:
     provider: ghcr
     url: ghcr.io
     credentials: GHCR
     default_path: "homelabhd/{var:repo}"   # ghcr namespace = github owner, lowercased
 
-builds:
-  # Weave GitOps webapp (dashboard/UI server). Builds entirely in the upstream
-  # gitops-server.dockerfile — node UI stage → go server stage → distroless runtime.
-  # No first-party binary to recycle; a single docker build off their Dockerfile.
-  - id: weave-gitops
-    kind: docker
-    dockerfile: gitops-server.dockerfile
-    platforms: [linux/amd64]
-    build_args:
-      GIT_COMMIT: "{sha}"
-
-targets:
-  # ── GHCR (primary): dev builds on every commit (turnkey on GitHub Actions) ──
-  - id: ghcr-dev
+publish:
+  # ── Stable releases → all registries ──
+  stable:
     kind: registry
-    registry: ghcr
-    build: weave-gitops
-    tags: ["dev-{sha:8}", "latest-dev"]
-    when: { branches: [main], events: [push] }
-
-  - id: ghcr-stable
-    kind: registry
-    registry: ghcr
+    registry: [dockerhub, ghcr, harbor]
     build: weave-gitops
     tags: ["v{version}", "latest"]
     when: { git_tags: [stable], events: [tag] }
 
-  - id: ghcr-prerelease
+  # ── Pre-releases → Docker Hub + GHCR ──
+  prerelease:
     kind: registry
-    registry: ghcr
+    registry: [dockerhub, ghcr]
     build: weave-gitops
     tags: ["v{version}"]
     when: { git_tags: [prerelease], events: [tag] }
 
-  # ── Docker Hub (gitlab-only: no Docker Hub creds on the GitHub fork) ──
-  - id: dockerhub-dev
+  # ── Dev builds on every commit → all registries (retained/pruned) ──
+  dev:
     kind: registry
-    registry: dockerhub
+    registry: [dockerhub, ghcr, harbor]
     build: weave-gitops
     tags: ["dev-{sha:8}", "latest-dev"]
-    when: { branches: [main], events: [push], forges: [gitlab] }
+    when: { branches: [main], events: [push] }
     retention:
       keep_last: 6
       protect: ["latest-dev"]
 
-  - id: dockerhub-stable
-    kind: registry
-    registry: dockerhub
-    build: weave-gitops
-    tags: ["v{version}", "latest"]
-    when: { git_tags: [stable], events: [tag], forges: [gitlab] }
-
-  - id: dockerhub-prerelease
-    kind: registry
-    registry: dockerhub
-    build: weave-gitops
-    tags: ["v{version}"]
-    when: { git_tags: [prerelease], events: [tag], forges: [gitlab] }
-
-  # ── Harbor (private cr.pcfae.com; unreachable from hosted GitHub runners → gitlab-only) ──
-  - id: harbor-dev
-    kind: registry
-    registry: harbor
-    build: weave-gitops
-    tags: ["dev-{sha:8}", "latest-dev"]
-    when: { branches: [main], events: [push], forges: [gitlab] }
-
-  - id: harbor-stable
-    kind: registry
-    registry: harbor
-    build: weave-gitops
-    tags: ["v{version}", "latest"]
-    when: { git_tags: [stable], events: [tag], forges: [gitlab] }
-
-  # ── Docker Hub README sync ──
-  - id: dockerhub-readme
-    kind: docker-readme
-    registry: dockerhub
+  # ── Project metadata: registry overviews + forge repos ──
+  project-metadata:
+    kind: metadata
+    registry: [dockerhub, harbor]
+    repos: [primary, github-mirror]
+    readme: README.md
+    description:
+      - "A fork of Weave GitOps — the open-source GitOps continuous-delivery UI for Flux on Kubernetes."
+    topics: [gitops, flux, kubernetes, continuous-delivery, weave-gitops, docker]
     when: { branches: [main], events: [push, tag] }
-    file: "README.md"
-    description: "Weave GitOps dashboard/webapp — self-built from upstream main (latest-unreleased)."
 
-  # ── Releases ──
-  - id: primary-release
+  # ── Release (gitlab primary; projects to github via github-mirror sync.releases) ──
+  release:
     kind: release
+    type: latest
+    repos: [primary]
     aliases: ["v{version}", "latest"]
-    when: { git_tags: [stable], events: [tag] }
-
-  - id: github-release
-    kind: release
-    mirror: github-mirror
-    sync_release: true
     when: { git_tags: [stable], events: [tag] }
 
 build_cache:
   mode: hybrid
   external:
-    target: harbor-dev
+    registry: harbor
     path: "cache"
     fallback: "main"
   local:
@@ -186,25 +136,53 @@ build_cache:
       max_size: "8GB"
 
 commit:
-  default_type: chore
+  default_type: docs
   conventional: true
   backend: git
+
+dependency:
+  enabled: true
+  output: ".stagefreight/deps"
+  scope:
+    dockerfile_env: true
+  commit:
+    enabled: true
+    type: chore
+    message: "update managed dependencies"
+    push: true
+    skip_ci: false
 
 lint:
   level: full
   exclude:
     - "*.png"
-    - "*.jpg"
-    - "*.ico"
     - "*.svg"
-    - "*.woff"
-    - "*.woff2"
-    - "ui/**"
-    - "website/**"
+    - "*.ico"
+  modules:
+    freshness:
+      enabled: true
+      cache_ttl: 300
+      sources:
+        docker_images: true
+      vulnerability:
+        enabled: true
+    tabs:
+      enabled: true
+    secrets:
+      enabled: true
+    conflicts:
+      enabled: true
+    filesize:
+      enabled: true
+    unicode:
+      enabled: true
+      detect_bidi: true
+      detect_zero_width: true
+      detect_control_ascii: true
 
 release:
   enabled: true
-  security_summary: ".stagefreight/security"
+  security_summary: true
   registry_links: true
 
 security:
@@ -214,14 +192,59 @@ security:
   release_detail: full
 
 toolchains:
-  desired:
-    trivy:
-      version: "0.69.3"
-    syft:
-      version: "1.42.3"
-    grype:
-      version: "0.110.0"
-    osv-scanner:
-      version: "2.3.5"
-    cosign:
-      version: "3.0.6"
+  trivy: "0.69.3"
+  syft: "1.42.3"
+  grype: "0.110.0"
+  osv-scanner: "2.3.5"
+  cosign: "3.0.6"
+
+# stencils: define each renderable once (id → stencil def). Inline defs render a
+# badge (default) or a shield (render: shield); named producers render via type.
+stencils:
+  # ── generated badges ──
+  build:   { label: build,   message: "{env:BUILD_STATUS}", color: auto, font: monofur, link: "https://gitlab.prplanit.com/{var:gitlab_group}/{var:repo}/-/pipelines" }
+  license: { label: license, message: "Apache-2.0", color: "#310937", font: monofur, link: LICENSE }
+  release: { label: release, message: "v{base}", color: "#74ecbe", font: dejavu-sans, font_size: 11, link: "https://github.com/{var:github_org}/{var:github_repo}/releases" }
+  updated: { label: updated, message: "{env:BUILD_DATE}", color: "#236144", font: dejavu-sans, font_size: 11 }
+  pulls:   { label: pulls,   message: "{docker.pulls}", color: "#1d63ed", link: "https://hub.docker.com/r/{var:org}/{var:repo}" }
+
+  # ── inline shields ──
+  donate:  { render: shield, message: donate,  color: "#FF5E5B", logo: ko-fi,          logo_color: white, link: "https://ko-fi.com/T6T41IT163" }
+  sponsor: { render: shield, message: sponsor, color: "#EA4AAA", logo: githubsponsors, logo_color: white, link: "https://github.com/sponsors/{var:github_org}" }
+  github:  { render: shield, label: GitHub, message: source, color: "#181717", logo: github, link: "https://github.com/{var:github_org}/{var:github_repo}" }
+  gitlab:  { render: shield, label: GitLab, message: source, color: "#FC6D26", logo: gitlab, link: "https://gitlab.prplanit.com/{var:gitlab_group}/{var:repo}" }
+  docker:  { render: shield, label: Docker, message: "{var:org}/{var:repo}", color: "#2496ED", logo: docker, logo_color: white, link: "https://hub.docker.com/r/{var:org}/{var:repo}" }
+
+  # ── named producers (repo resolves from repos: publish-origin) ──
+  last-commit:  { type: github-last-commit }
+  issues-open:  { type: github-issues-open }
+  prs-open:     { type: github-prs-open }
+  contributors: { type: github-contributors }
+
+scribe:
+  files:
+    readme.badges:
+      file: "README.md"
+      between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
+      inline: true
+      items: [build, license, release, updated, donate, sponsor]
+
+    readme.project:
+      file: "README.md"
+      between: ["<!-- sf:project:start -->", "<!-- sf:project:end -->"]
+      inline: true
+      items: [github, gitlab, last-commit, issues-open, prs-open, contributors]
+
+    readme.image:
+      file: "README.md"
+      between: ["<!-- sf:image:start -->", "<!-- sf:image:end -->"]
+      items: [docker, pulls]
+
+  commit:
+    type: docs
+    message: "refresh generated docs and badges"
+    add:
+      - "README.md"
+      - ".stagefreight/scribe"
+    push: true
+    skip_ci: true
