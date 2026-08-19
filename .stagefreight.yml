@@ -158,6 +158,9 @@ lint:
     - "*.png"
     - "*.svg"
     - "*.ico"
+    # Vendored upstream Docusaurus docs — ~5k files / 298MB we don't build or ship.
+    # Scanning it ran secrets/unicode/tabs/conflicts over 3k+ doc files every audition.
+    - "website/**"
   modules:
     freshness:
       enabled: true
