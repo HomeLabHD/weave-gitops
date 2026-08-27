@@ -23,13 +23,9 @@ vars:
 
 builds:
   # Our fork of weaveworks/weave-gitops — no first-party binary to recycle; a single
-  # docker build off their server dockerfile.
+  # docker build off their Dockerfile.
   weave-gitops:
     kind: docker
-    # Named explicitly: the repo ships three *.dockerfile candidates, and the server
-    # image is the one to publish. dev.dockerfile is a local-dev stub that ADDs a
-    # prebuilt bin/ this pipeline never produces.
-    dockerfile: gitops-server.dockerfile
     platforms: [linux/amd64]
 
 forges:
