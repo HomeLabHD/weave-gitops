@@ -2,21 +2,72 @@ package http_test
 
 import (
 	"context"
+	crand "crypto/rand"
+	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/pem"
 	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"math/rand/v2"
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
+	"time"
 
 	. "github.com/onsi/gomega"
 
 	wegohttp "github.com/weaveworks/weave-gitops/pkg/http"
 )
+
+// writeLocalhostCert generates a self-signed localhost cert/key into a per-test
+// temp dir and returns their file paths.
+func writeLocalhostCert(t *testing.T) (certFile, keyFile string) {
+	t.Helper()
+
+	key, err := rsa.GenerateKey(crand.Reader, 2048)
+	if err != nil {
+		t.Fatalf("generate key: %v", err)
+	}
+
+	tmpl := x509.Certificate{
+		SerialNumber:          big.NewInt(1),
+		Subject:               pkix.Name{CommonName: "localhost"},
+		NotBefore:             time.Now().Add(-time.Hour),
+		NotAfter:              time.Now().Add(24 * time.Hour),
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		DNSNames:              []string{"localhost"},
+		IPAddresses:           []net.IP{net.IPv4(127, 0, 0, 1), net.IPv6loopback},
+		BasicConstraintsValid: true,
+	}
+
+	der, err := x509.CreateCertificate(crand.Reader, &tmpl, &tmpl, &key.PublicKey, key)
+	if err != nil {
+		t.Fatalf("create certificate: %v", err)
+	}
+
+	dir := t.TempDir()
+	certFile = filepath.Join(dir, "localhost.crt")
+	keyFile = filepath.Join(dir, "localhost.key")
+
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})
+	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
+
+	if err := os.WriteFile(certFile, certPEM, 0o600); err != nil {
+		t.Fatalf("write cert: %v", err)
+	}
+	if err := os.WriteFile(keyFile, keyPEM, 0o600); err != nil {
+		t.Fatalf("write key: %v", err)
+	}
+
+	return certFile, keyFile
+}
 
 func portInUse(port int) bool {
 	conn, err := net.Dial("tcp", fmt.Sprintf("localhost:%d", port))
@@ -29,9 +80,10 @@ func portInUse(port int) bool {
 
 func TestMultiServerStartReturnsImmediatelyWithClosedContext(t *testing.T) {
 	g := NewGomegaWithT(t)
+	certFile, keyFile := writeLocalhostCert(t)
 	srv := wegohttp.MultiServer{
-		CertFile: "testdata/localhost.crt",
-		KeyFile:  "testdata/localhost.key",
+		CertFile: certFile,
+		KeyFile:  keyFile,
 		Logger:   log.Default(),
 	}
 	ctx, cancel := context.WithCancel(t.Context())
@@ -59,11 +111,12 @@ func TestMultiServerServesOverBothProtocols(t *testing.T) {
 		httpsPort = rand.N(49151-1024) + 1024 // #nosec G404
 	}
 
+	certFile, keyFile := writeLocalhostCert(t)
 	srv := wegohttp.MultiServer{
 		HTTPPort:  httpPort,
 		HTTPSPort: httpsPort,
-		CertFile:  "testdata/localhost.crt",
-		KeyFile:   "testdata/localhost.key",
+		CertFile:  certFile,
+		KeyFile:   keyFile,
 		Logger:    log.Default(),
 	}
 	ctx, cancel := context.WithCancel(t.Context())
@@ -94,7 +147,7 @@ func TestMultiServerServesOverBothProtocols(t *testing.T) {
 
 	// test HTTPS
 
-	certBytes, err := os.ReadFile("testdata/localhost.crt")
+	certBytes, err := os.ReadFile(certFile)
 	g.Expect(err).NotTo(HaveOccurred())
 
 	rootCAs := x509.NewCertPool()
