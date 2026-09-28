@@ -85,41 +85,41 @@ func (l *S3LogWriter) putLog(msg string) {
 func (l *S3LogWriter) Println(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog(msg)
-	l.log0.Println(msg)
+	l.log0.Println("%s", msg)
 }
 
 func (l *S3LogWriter) Actionf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("► " + msg)
-	l.log0.Actionf(msg)
+	l.log0.Actionf("%s", msg)
 }
 
 func (l *S3LogWriter) Failuref(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("✗ " + msg)
-	l.log0.Failuref(msg)
+	l.log0.Failuref("%s", msg)
 }
 
 func (l *S3LogWriter) Generatef(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("✚ " + msg)
-	l.log0.Generatef(msg)
+	l.log0.Generatef("%s", msg)
 }
 
 func (l *S3LogWriter) Successf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("✔ " + msg)
-	l.log0.Successf(msg)
+	l.log0.Successf("%s", msg)
 }
 
 func (l *S3LogWriter) Waitingf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("◎ " + msg)
-	l.log0.Waitingf(msg)
+	l.log0.Waitingf("%s", msg)
 }
 
 func (l *S3LogWriter) Warningf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	l.putLog("⚠️ " + msg)
-	l.log0.Warningf(msg)
+	l.log0.Warningf("%s", msg)
 }
