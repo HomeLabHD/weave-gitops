@@ -38,7 +38,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/oauth2-proxy/mockoidc v0.0.0-20240214162133-caebfff84d25
 	github.com/onsi/ginkgo/v2 v2.26.0
-	github.com/onsi/gomega v1.38.2
+	github.com/onsi/gomega v1.42.1
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/prometheus/client_golang v1.23.2
 	github.com/sethvargo/go-limiter v1.0.0
