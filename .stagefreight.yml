@@ -16,9 +16,6 @@ vars:
   repo: weave-gitops
 builds:
   image:
-    # Three Dockerfiles exist (dev, gitops-server, gitops); the published image is the
-    # server (wego-app: UI + API) — gitops.dockerfile is a flux-CLI alias, dev.dockerfile
-    # is local-only. Name it so StageFreight builds the right one.
     dockerfile: gitops-server.dockerfile
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/build-docker.yml
 scribe:
@@ -39,18 +36,12 @@ lint:
     - website/**
   modules:
     freshness:
-      # Hold ONLY these deps from the freshness gate — each is blocked by upstream tooling,
-      # not stale by neglect. Freshness stays fully active for every other dependency.
-      # Revisit when the blocker clears:
-      #   typescript 7  — ts-jest (<6.1.0) and parcel do not support the TS7 native compiler
-      #   @babel/* 8    — parcel hard-pins @babel/core ^7
-      #   eslint 10     — eslint-plugin-react (<=^9.7) / eslint-plugin-import (<=^9) lack support
       ignore:
         - typescript
-        - "@babel/core"
-        - "@babel/preset-env"
+        - '@babel/core'
+        - '@babel/preset-env'
         - eslint
-        - "@eslint/js"
+        - '@eslint/js'
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/lint-generic.yml
 security:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/security.yml
