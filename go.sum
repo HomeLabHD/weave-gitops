@@ -69,8 +69,8 @@ github.com/cevatbarisyilmaz/ara v0.0.4 h1:SGH10hXpBJhhTlObuZzTuFn1rrdmjQImITXnZV
 github.com/cevatbarisyilmaz/ara v0.0.4/go.mod h1:BfFOxnUd6Mj6xmcvRxHN3Sr21Z1T3U2MYkYOmoQe4Ts=
 github.com/chai2010/gettext-go v1.0.3 h1:9liNh8t+u26xl5ddmWLmsOsdNLwkdRTg5AG+JnTiM80=
 github.com/chai2010/gettext-go v1.0.3/go.mod h1:y+wnP2cHYaVj19NZhYKAwEMH2CI1gNHeQQ+5AjwawxA=
-github.com/cheshir/ttlcache v1.0.0 h1:SAjXm+6LdzJxzeNK5qIUq8e+nOI3DQgpe6KZiOx7oJA=
-github.com/cheshir/ttlcache v1.0.0/go.mod h1:B9qWHhPE7FnRG2HNiPajGzOFX9NYcObDTkg3Ixh9Fzk=
+github.com/cheshir/ttlcache v1.0.1-0.20220504185148-8ceeff21b789 h1:eWRC5oPQ3G4BtSv0hsHTB777h7iCZct8RCm6jrsozsg=
+github.com/cheshir/ttlcache v1.0.1-0.20220504185148-8ceeff21b789/go.mod h1:B9qWHhPE7FnRG2HNiPajGzOFX9NYcObDTkg3Ixh9Fzk=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/logex v1.2.1 h1:XHDu3E6q+gdHgsdTPH6ImJMIp436vR6MPtH8gP05QzM=
 github.com/chzyer/logex v1.2.1/go.mod h1:JLbx6lG2kDbNRFnfkgvh4eRJRPX1QCoOIWomwysCBrQ=
