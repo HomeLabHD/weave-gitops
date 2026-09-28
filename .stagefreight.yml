@@ -15,6 +15,11 @@ vars:
   org: hlhd
   repo: weave-gitops
 builds:
+  image:
+    # Three Dockerfiles exist (dev, gitops-server, gitops); the published image is the
+    # server (wego-app: UI + API) — gitops.dockerfile is a flux-CLI alias, dev.dockerfile
+    # is local-only. Name it so StageFreight builds the right one.
+    dockerfile: gitops-server.dockerfile
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/build-docker.yml
 scribe:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/scribe-docker.yml
