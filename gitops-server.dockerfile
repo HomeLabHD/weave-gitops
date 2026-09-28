@@ -2,6 +2,8 @@
 FROM node:26-bookworm@sha256:2aaae6d91f99fee84cfc92da9b52c22a185752d247746052bbc3f961e44478c6 AS ui
 RUN apt-get update -y && apt-get install -y build-essential python3 g++
 RUN npm install -g node-gyp
+# Node 26 ships neither yarn nor corepack; the build drives yarn (packageManager: yarn@4.9.1) via make.
+RUN npm install -g corepack@latest && corepack enable
 RUN mkdir -p /home/app && chown -R node:node /home/app
 WORKDIR /home/app
 USER node
