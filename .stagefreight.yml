@@ -36,25 +36,13 @@ lint:
 security:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/security.yml
 dependency:
-  ignore:
-    - id: typescript
-      reason: "TypeScript 7 is the native-compiler rewrite; upstream tooling is not ready — yarn's TS-patch breaks (no lib/_tsc.js) and ts-jest requires typescript <6.1.0, so TS7 is uninstallable here. Revisit when ts-jest and parcel support TS7."
-      until: "2026-12-01"
-    - id: "@babel/core"
-      reason: "Babel 8 breaks the parcel bundler, which hard-pins @babel/core ^7. Revisit when parcel supports Babel 8."
-      until: "2026-12-01"
-    - id: "@babel/preset-env"
-      reason: "Babel 8 breaks the parcel bundler (pairs with the @babel/core ^7 pin)."
-      until: "2026-12-01"
-    - id: eslint
-      reason: "ESLint 10 unsupported by our plugins: eslint-plugin-react (latest 7.37.5) peers eslint <=^9.7 and eslint-plugin-import (latest 2.32.0) peers <=^9 — their flat configs still use array-form plugins, which ESLint 10 rejects. Revisit when eslint-plugin-react + eslint-plugin-import ship ESLint 10 support."
-      until: "2026-12-01"
-    - id: "@eslint/js"
-      reason: "Pinned to the ESLint 9 line; moves with eslint core (ESLint 10 is blocked by eslint-plugin-react / eslint-plugin-import)."
-      until: "2026-12-01"
-    - id: github.com/cheshir/ttlcache
-      reason: "Hold the v1.0.1-0.20220504 commit that provides Cache.Clear() (used by core/clustersmngr/factory_caches.go). The only tagged release, v1.0.0, predates Clear(), so 'updating to the release' silently removes the method and breaks the build. cheshir/ttlcache is effectively unmaintained; keep the pinned pseudo-version."
-      until: "2026-12-01"
+  # Freshness scope: security-only. This is a fork of the ARCHIVED weaveworks/weave-gitops,
+  # so freshness (staleness) of non-vulnerable deps is not pursued or gated — several majors
+  # are blocked by upstream tooling anyway (TypeScript 7 by ts-jest/parcel, Babel 8 by parcel,
+  # ESLint 10 by eslint-plugin-react/-import). Known CVEs remain a floor and are always
+  # remediated regardless of this scope. (Per-dependency freshness ignore is not a StageFreight
+  # surface; ttlcache is held at its Cache.Clear()-bearing pseudo-version via a go.mod replace.)
+  policy: security
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/dependency.yml
 commit:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/commit.yml
