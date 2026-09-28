@@ -124,7 +124,7 @@
     "ts-jest": "^29.4.14",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.70.1",
-    "yarn-audit-fix": "^11.0.4"
+    "yarn-audit-fix": "^11.0.5"
   },
   "resolutions": {
     "cross-spawn": "^7.0.6",

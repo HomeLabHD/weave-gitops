@@ -5015,7 +5015,7 @@ __metadata:
     ts-jest: "npm:^29.4.14"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.70.1"
-    yarn-audit-fix: "npm:^11.0.4"
+    yarn-audit-fix: "npm:^11.0.5"
   peerDependencies:
     lodash: ^4.18.1
     react: ^19.0.0
@@ -9275,9 +9275,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lockgraph@npm:^0.6.7":
-  version: 0.6.7
-  resolution: "lockgraph@npm:0.6.7"
+"lockgraph@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "lockgraph@npm:0.8.1"
   dependencies:
     node-fetch-native: "npm:^1.6.7"
     pako: "npm:^3.0.1"
@@ -9287,7 +9287,7 @@ __metadata:
   peerDependenciesMeta:
     "@yarnpkg/libzip":
       optional: true
-  checksum: 10c0/fca2b2515541655462d9293feccaabd5133c7617516ff3196ad18b95cb7fdc9aef4bdf3b0c597e708fe7bce183f0cecd7d502f296e06e7d2ce1a143c0a21335a
+  checksum: 10c0/9c5fc179ee9a512453c554fa03d90396c7550d0dd2b16a93f340b00f1e6533d0c781d58da49af5aa7e36a6be7e1aaeac5551bd51fd680c75adf86b69d0f4726f
   languageName: node
   linkType: hard
 
@@ -12991,19 +12991,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yarn-audit-fix@npm:^11.0.4":
-  version: 11.0.4
-  resolution: "yarn-audit-fix@npm:11.0.4"
+"yarn-audit-fix@npm:^11.0.5":
+  version: 11.0.5
+  resolution: "yarn-audit-fix@npm:11.0.5"
   dependencies:
     "@types/semver": "npm:^7.8.0"
     "@yarnpkg/libzip": "npm:^3.2.2"
     fast-glob: "npm:^3.3.3"
-    lockgraph: "npm:^0.6.7"
+    lockgraph: "npm:^0.8.1"
     minimist: "npm:^1.2.8"
     semver: "npm:^7.8.5"
   bin:
     yarn-audit-fix: target/esm/cli.mjs
-  checksum: 10c0/6eb4a2e2d66f9f2fdc38f7a73abed132acb37d83a580d928c009e91ca885ded3248ca9c836dfd1ef23681268d96c54e288bacd925e4c408ec00a39d855448bd3
+  checksum: 10c0/320e0fe4dcf859a21027170aaf96aa93ef8acf0f344cfa00e5f7503a0a2a5a79a89a8a6a8ac3155c9f766e925a7b0d2735d8f91ab62ecc816c000b8e57b6a1f8
   languageName: node
   linkType: hard
 
