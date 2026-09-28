@@ -5,7 +5,8 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "target": "ES2018",
-        "module": "CommonJS",
+        "module": "esnext",
+        "moduleResolution": "bundler",
     },
     "include": [
         "ui/**/*"

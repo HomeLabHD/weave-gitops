@@ -20,11 +20,13 @@ export default tseslint.config([
             tseslint.configs.recommended,
             importPlugin.flatConfigs.typescript,
             reactPlugin.configs.flat['jsx-runtime'],
-            reactHooksPlugin.configs['recommended-latest'],
         ],
         ...reactPlugin.configs.flat.recommended,
     },
     {
+        plugins: {
+            "react-hooks": reactHooksPlugin,
+        },
         rules: {
             "import/named": 2,
             "import/order": [2,

@@ -1,4 +1,4 @@
-import { UseMutationResult } from "@tanstack/react-query";
+import type { UseMutationResult } from "@tanstack/react-query";
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { ToggleSuspendResourceResponse } from "../../lib/api/core/core.pb";
