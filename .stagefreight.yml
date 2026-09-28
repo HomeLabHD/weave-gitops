@@ -32,17 +32,24 @@ lint:
     - '*.woff2'
     - '*.pdf'
     - website/**
+  modules:
+    freshness:
+      # Hold ONLY these deps from the freshness gate — each is blocked by upstream tooling,
+      # not stale by neglect. Freshness stays fully active for every other dependency.
+      # Revisit when the blocker clears:
+      #   typescript 7  — ts-jest (<6.1.0) and parcel do not support the TS7 native compiler
+      #   @babel/* 8    — parcel hard-pins @babel/core ^7
+      #   eslint 10     — eslint-plugin-react (<=^9.7) / eslint-plugin-import (<=^9) lack support
+      ignore:
+        - typescript
+        - "@babel/core"
+        - "@babel/preset-env"
+        - eslint
+        - "@eslint/js"
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/lint-generic.yml
 security:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/security.yml
 dependency:
-  # Freshness scope: security-only. This is a fork of the ARCHIVED weaveworks/weave-gitops,
-  # so freshness (staleness) of non-vulnerable deps is not pursued or gated — several majors
-  # are blocked by upstream tooling anyway (TypeScript 7 by ts-jest/parcel, Babel 8 by parcel,
-  # ESLint 10 by eslint-plugin-react/-import). Known CVEs remain a floor and are always
-  # remediated regardless of this scope. (Per-dependency freshness ignore is not a StageFreight
-  # surface; ttlcache is held at its Cache.Clear()-bearing pseudo-version via a go.mod replace.)
-  policy: security
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/dependency.yml
 commit:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/commit.yml
