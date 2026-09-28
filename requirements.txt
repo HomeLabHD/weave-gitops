@@ -4,3 +4,4 @@ pytest==8.4.2
 pytest-dotenv==0.5.2
 pytest-playwright==0.7.1
 pytest-reporter-html1==0.9.5
+requests>=2.32.4  # pin the transitive dep off the vulnerable 2.9.2 (PYSEC-2018-28)
