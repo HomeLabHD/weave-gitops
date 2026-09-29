@@ -42,6 +42,7 @@ lint:
         - '@babel/preset-env'
         - eslint
         - '@eslint/js'
+        - react-router
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/lint-generic.yml
 security:
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/security.yml
