@@ -24,12 +24,16 @@ COPY . /app
 
 # These are ARGS are defined here to minimise cache misses
 # (cf. https://docs.docker.com/engine/reference/builder/#impact-on-build-caching)
-# Pass these flags so we don't have to copy .git/ for those commands to work
-ARG LDFLAGS="-X localbuild=true"
+# Build metadata for the version ldflags. Git is not in the build context, so these are
+# passed as build args (populated from StageFreight {version}/{sha}/{date}/{branch}) and
+# forwarded to make, which assembles LDFLAGS from them. Without this the binary reports v0.0.0.
+ARG VERSION="v0.0.0-dev"
 ARG GIT_COMMIT="_unset_"
+ARG BUILD_TIME="_unset_"
+ARG BRANCH="_unset_"
 
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache \
-    LDFLAGS=$LDFLAGS GIT_COMMIT=$GIT_COMMIT make gitops
+    VERSION="$VERSION" GIT_COMMIT="$GIT_COMMIT" BUILD_TIME="$BUILD_TIME" BRANCH="$BRANCH" make gitops
 
 # Distroless
 FROM gcr.io/distroless/base@sha256:9e9b50d2048db3741f86a48d939b4e4cc775f5889b3496439343301ff54cdba8 AS runtime
