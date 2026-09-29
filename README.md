@@ -1,5 +1,10 @@
 # Weave GitOps
 
+Weave GitOps is a simple, open source developer platform for people who want cloud native applications but who don't have
+Kubernetes expertise. Experience how easy it is to enable GitOps and run your apps in a cluster. Use Git to collaborate
+with team members making new deployments easy and secure. Start with what developers need to run apps, and then easily
+extend to define and run your own enterprise platform.
+
 <!-- sf:project:start -->
 [![GitHub](https://img.shields.io/badge/GitHub-mirror-181717?logo=github)](https://github.com/HomeLabHD/weave-gitops) [![GitLab](https://img.shields.io/badge/GitLab-source-FC6D26?logo=gitlab)](https://gitlab.prplanit.com/HomeLabHD/weave-gitops) [![license](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/license.svg)](https://github.com/HomeLabHD/weave-gitops/blob/main/LICENSE) [![Open Issues](https://img.shields.io/github/issues/HomeLabHD/weave-gitops)](https://github.com/HomeLabHD/weave-gitops/issues) [![Open PRs](https://img.shields.io/github/issues-pr/HomeLabHD/weave-gitops)](https://github.com/HomeLabHD/weave-gitops/pulls) [![Contributors](https://img.shields.io/github/contributors/HomeLabHD/weave-gitops)](https://github.com/HomeLabHD/weave-gitops/graphs/contributors) [![donate](https://img.shields.io/badge/donate-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/T6T41IT163) [![sponsor](https://img.shields.io/badge/sponsor-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/HomeLabHD)
 <!-- sf:project:end -->
@@ -12,6 +17,8 @@
 [![latest](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/release-latest.svg)](https://github.com/HomeLabHD/weave-gitops/pkgs/container/weave-gitops) ![updated](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/release-updated.svg) [![size](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/release-size.svg)](https://github.com/HomeLabHD/weave-gitops/pkgs/container/weave-gitops) [![latest-dev](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/dev-latest.svg)](https://github.com/HomeLabHD/weave-gitops/pkgs/container/weave-gitops) ![updated](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/dev-updated.svg) [![size](https://raw.githubusercontent.com/HomeLabHD/weave-gitops/main/.stagefreight/scribe/dev-size.svg)](https://github.com/HomeLabHD/weave-gitops/pkgs/container/weave-gitops)
 <!-- sf:image:end -->
 
+---
+
 ![Test status](https://github.com/weaveworks/weave-gitops/actions/workflows/pr.yaml/badge.svg)
 [![LICENSE](https://img.shields.io/github/license/weaveworks/weave-gitops)](https://github.com/weaveworks/weave-gitops/blob/master/LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/weaveworks/weave-gitops)](https://github.com/weaveworks/weave-gitops/graphs/contributors)
@@ -21,12 +28,6 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops?ref=badge_shield&issueType=security)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7820/badge)](https://www.bestpractices.dev/projects/7820)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/weaveworks/weave-gitops/badge)](https://scorecard.dev/viewer/?uri=github.com/weaveworks/weave-gitops)
-[![Go Report Card](https://goreportcard.com/badge/github.com/weaveworks/weave-gitops)](https://goreportcard.com/report/github.com/weaveworks/weave-gitops)
-
-Weave GitOps is a simple, open source developer platform for people who want cloud native applications but who don't have
-Kubernetes expertise. Experience how easy it is to enable GitOps and run your apps in a cluster. Use Git to collaborate
-with team members making new deployments easy and secure. Start with what developers need to run apps, and then easily
-extend to define and run your own enterprise platform.
 
 From Kubernetes run Weave GitOps to get:
 
@@ -112,7 +113,6 @@ Examples:
   gitops version
 
   To learn more, you can find our documentation at https://docs.gitops.weaveworks.org/
-
 
 Available Commands:
   beta        This component contains unstable or still-in-development functionality
