@@ -16,6 +16,11 @@ vars:
   repo: weave-gitops
 builds:
   image:
+    build_args:
+      BRANCH: '{branch}'
+      BUILD_TIME: '{date}'
+      GIT_COMMIT: '{sha}'
+      VERSION: '{version}'
     dockerfile: gitops-server.dockerfile
   preset: https://gitlab.prplanit.com/PrPlanIT/MaintenancePolicy//preset/build-docker.yml
 scribe:
