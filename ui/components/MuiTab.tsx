@@ -7,28 +7,23 @@ type Props = {
   className?: string;
   active?: boolean;
   component?: any;
-  key?: number;
   to?: string;
   text: string;
   onClick?: any;
+  // MUI <Tabs> injects props (value, selected, indicator, fullWidth, textColor, …)
+  // and a ref into each child; they are forwarded through ...rest so the underlying
+  // <Tab> and MUI 9's roving-tabindex receive them.
+  [key: string]: any;
 };
 
-function MuiTab({
-  className,
-  active,
-  component,
-  key,
-  to,
-  text,
-  onClick,
-}: Props) {
+const MuiTab = React.forwardRef<HTMLDivElement, Props>(function MuiTab(
+  { className, active, text, ...rest },
+  ref,
+) {
   return (
     <Tab
-      className={className + `${active && " active-tab"}`}
-      component={component}
-      key={key}
-      to={to}
-      onClick={onClick}
+      ref={ref}
+      className={`${className ?? ""}${active ? " active-tab" : ""}`}
       label={
         <Text
           size="small"
@@ -40,11 +35,14 @@ function MuiTab({
           {text}
         </Text>
       }
+      {...rest}
     />
   );
-}
+});
 
-export default styled(MuiTab).attrs({ className: MuiTab.name })`
+MuiTab.displayName = "MuiTab";
+
+export default styled(MuiTab).attrs({ className: MuiTab.displayName })`
   &.active-tab {
     background: ${(props) => props.theme.colors.primary}19;
   }

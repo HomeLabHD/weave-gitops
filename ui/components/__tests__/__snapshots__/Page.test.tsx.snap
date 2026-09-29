@@ -210,7 +210,7 @@ exports[`Page snapshots default 1`] = `
           class="MuiSwitch-root MuiSwitch-sizeMedium c9 DarkModeSwitch css-rehya9-MuiSwitch-root"
         >
           <span
-            class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary css-1sllkyg-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+            class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary css-1a9n1ws-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
           >
             <input
               class="PrivateSwitchBase-input MuiSwitch-input css-12xagqm-MuiSwitchBase-root"
@@ -218,16 +218,16 @@ exports[`Page snapshots default 1`] = `
               type="checkbox"
             />
             <span
-              class="MuiSwitch-thumb css-17jyosd-MuiSwitch-thumb"
+              class="MuiSwitch-thumb css-1mw77bv-MuiSwitch-thumb"
             />
           </span>
           <span
-            class="MuiSwitch-track css-tj8d99-MuiSwitch-track"
+            class="MuiSwitch-track css-pm6g3f-MuiSwitch-track"
           />
         </span>
         <a
           aria-label="Docs"
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium c10 c11 Link css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium c10 c11 Link css-io3cf4-MuiButtonBase-root-MuiIconButton-root"
           data-mui-internal-clone-element="true"
           href="https://docs.gitops.weaveworks.org/"
           rel="noreferrer"
@@ -253,7 +253,7 @@ exports[`Page snapshots default 1`] = `
         <button
           aria-haspopup="true"
           aria-label="Account settings"
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium c10 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium c10 css-io3cf4-MuiButtonBase-root-MuiIconButton-root"
           data-mui-internal-clone-element="true"
           tabindex="0"
           type="button"

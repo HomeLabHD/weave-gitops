@@ -31,7 +31,9 @@ const config = {
 
   transform: {
     "\\.tsx?$": "ts-jest",
-    "\\.jsx?$": [
+    // Match .mjs too: jsdom's newer deps (@csstools/*, @asamuzakjp/*) ship ESM .mjs
+    // that must be transformed for tests that import jsdom directly.
+    "\\.m?jsx?$": [
       "babel-jest",
       {
         configFile: "./babel.config.testing.json",
