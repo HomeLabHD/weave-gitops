@@ -107,8 +107,13 @@ function UnstyledDataTable({
     if (sortedItem) {
       sorted = _.orderBy(
         filtered,
-        [sortedItem.sortValue || sortedItem.value],
-        [sortedItem.reverseSort ? "desc" : "asc"],
+        // Break ties with the stable row id (the same `uid` used as the row key)
+        // so a low-cardinality sort (e.g. Status, which maps to just 1-4) can't
+        // reshuffle tied rows when the source list arrives in a different order on
+        // each poll — that reshuffle is what jumps the scroll position mid-list.
+        // `uid` is always ascending; where a row lacks a uid it's a harmless no-op.
+        [sortedItem.sortValue || sortedItem.value, "uid"],
+        [sortedItem.reverseSort ? "desc" : "asc", "asc"],
       );
     }
     return sorted;

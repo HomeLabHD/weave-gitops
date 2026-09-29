@@ -103,6 +103,51 @@ describe("DataTable", () => {
       const firstRow = screen.getAllByRole("row")[1];
       expect(firstRow.innerHTML).toMatch(/podinfo/);
     });
+    it("breaks ties deterministically by uid, regardless of input order", () => {
+      // Status is low-cardinality (maps to 1-4), so these all tie. Without a stable
+      // tiebreaker, lodash's stable sort mirrors the input order — which varies each
+      // poll, reshuffling tied rows and jumping the scroll. The uid tiebreaker must
+      // produce the SAME displayed order no matter how the source list is ordered.
+      const tiedFields = [
+        {
+          label: "Status",
+          value: "status",
+          sortValue: ({ status, suspended }) =>
+            suspended ? 2 : status ? 3 : 1,
+          defaultSort: true,
+        },
+        { label: "Name", value: ({ name }) => name },
+      ];
+      const a = { uid: "aaa", name: "alpha", status: true };
+      const b = { uid: "bbb", name: "bravo", status: true };
+      const c = { uid: "ccc", name: "charlie", status: true };
+
+      const orderOf = (rowsIn) => {
+        const { container, unmount } = render(
+          withTheme(
+            withContext(
+              <DataTable fields={tiedFields} rows={rowsIn} />,
+              "/applications",
+              {},
+            ),
+          ),
+        );
+        const names = Array.from(
+          container.querySelectorAll("tbody tr"),
+        ).map((tr) => tr.textContent);
+        unmount();
+        return names;
+      };
+
+      const order1 = orderOf([a, b, c]);
+      const order2 = orderOf([c, a, b]);
+      const order3 = orderOf([b, c, a]);
+
+      expect(order1).toEqual(order2);
+      expect(order2).toEqual(order3);
+      // deterministic order is the uid order: aaa, bbb, ccc
+      expect(order1.join("|")).toMatch(/alpha.*bravo.*charlie/);
+    });
     it("should render text when rows are empty", () => {
       render(
         withTheme(
