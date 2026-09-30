@@ -5,7 +5,7 @@ import Link from "./Link";
 import Spacer from "./Spacer";
 import Text from "./Text";
 
-export const repoUrl = "https://github.com/weaveworks/weave-gitops";
+export const repoUrl = "https://github.com/HomeLabHD/weave-gitops";
 
 export const noVersion = "no version";
 

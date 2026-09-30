@@ -352,7 +352,7 @@ describe("utils lib", () => {
 
       expect(appVersion.versionText).toEqual(`vdefault version`);
       expect(appVersion.versionHref).toEqual(
-        "https://github.com/weaveworks/weave-gitops/releases/tag/vdefault version",
+        "https://github.com/HomeLabHD/weave-gitops/releases/tag/vdefault version",
       );
     });
     it("should return api version for full response if not loading data", () => {
@@ -365,7 +365,7 @@ describe("utils lib", () => {
 
       expect(appVersion.versionText).toEqual("branch-commit");
       expect(appVersion.versionHref).toEqual(
-        "https://github.com/weaveworks/weave-gitops/commit/commit",
+        "https://github.com/HomeLabHD/weave-gitops/commit/commit",
       );
     });
     it("should return default version without prefix for full response if loading data", () => {
@@ -373,7 +373,7 @@ describe("utils lib", () => {
 
       expect(appVersion.versionText).toEqual(`default version`);
       expect(appVersion.versionHref).toEqual(
-        "https://github.com/weaveworks/weave-gitops/releases/tag/vdefault version",
+        "https://github.com/HomeLabHD/weave-gitops/releases/tag/vdefault version",
       );
     });
     it("should return api version without prefix for full response", () => {
@@ -381,7 +381,7 @@ describe("utils lib", () => {
 
       expect(appVersion.versionText).toEqual("branch-commit");
       expect(appVersion.versionHref).toEqual(
-        "https://github.com/weaveworks/weave-gitops/commit/commit",
+        "https://github.com/HomeLabHD/weave-gitops/commit/commit",
       );
     });
   });
